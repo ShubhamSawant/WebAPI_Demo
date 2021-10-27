@@ -81,31 +81,24 @@ namespace WebAPI_Demo.Controllers
         {
             if (value != "")
             {
-                //List<Models.Employee> employees = new List<Models.Employee>();
-                //var list = _context.Employees.ToList();
-                //var ff1 = list.Where(x => x.EmployeeName.Contains(value)).ToList();
-                //var ff2 = list.Where(x => x.EmployeeLocation.Contains(value)).ToList();
-                //var ff3 = list.Where(x => x.Department.Contains(value)).ToList();
-                //var boo1 = false;
-                //var boo2 = false;
-                //var boo3 = false;
-
-                //if (ff1.Count > 0)
-                //    boo1 = true;
-                //if (ff2.Count > 0)
-                //    boo2 = true;
-                //if (ff3.Count > 0)
-                //    boo3 = true;
-                //if (boo1)
-                //    employees.AddRange(ff1);
-                //if(boo1 && boo2)
-
-                if (value == "~")
+                string searchValue = value;
+                if (searchValue == "~")
                 {
                     return Ok(_context.Employees.OrderBy(x => x.EmployeeName).Skip(0).Take(50).ToList());
                 }
 
-                return Ok(_context.Employees.Where(x => x.EmployeeName.Contains(value)).ToList());
+                List<Models.Employee> employees = new List<Models.Employee>();
+                var list = _context.Employees.ToList();
+                var empNamelst = list.Where(x => x.EmployeeName.Contains(searchValue.Trim(), StringComparison.CurrentCultureIgnoreCase)).ToList();
+                var empLocationlst = list.Where(x => x.EmployeeLocation.Contains(searchValue.Trim(), StringComparison.CurrentCultureIgnoreCase)).ToList();
+                var empDeptlst = list.Where(x => x.Department.Contains(searchValue.Trim(), StringComparison.CurrentCultureIgnoreCase)).ToList();
+                if (empNamelst.Count > 0)
+                    employees.AddRange(empNamelst);
+                if (empLocationlst.Count > 0)
+                    employees.AddRange(empLocationlst);
+                if (empDeptlst.Count > 0)
+                    employees.AddRange(empDeptlst);
+                return Ok(employees);
             }
             return null;
         }
